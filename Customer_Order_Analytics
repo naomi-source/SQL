@@ -1,0 +1,68 @@
+#In this SQL, I'm querying a database with multiple tables in it to quantify statistics about customer and order data.
+
+-- First, I'll investigat teh schema of the tables in the database.
+-- Investigating the schema of the customers table
+--SELECT * FROM BIT_DB.customers WHERE length(order_id) = 6 AND order_id <> 'Order ID' AND order_id IS NOT NULL AND order_id <> '' LIMIT 20;
+-- We have cleaned out order ids that may be null or invalid. We also see the customers table has two columns, namely:
+--customers.order_id
+--customers.acctnum
+
+-- Investigating the schema of the JanSales table
+-- SELECT * FROM BIT_DB.JanSales LIMIT 20;
+-- The JanSales table has 6 columns, namely:
+-- JanSales.orderID
+-- JanSales.Product
+-- JanSales.Quantity
+-- JanSales.price
+-- JanSales.orderdate
+-- JanSales.location
+-- The orderID column is linked to the order_id column in the customers table
+
+-- Part 1. How many of those orders were placed in January?
+-- SELECT COUNT(orderID) 
+-- FROM BIT_DB.JanSales 
+-- WHERE length(orderID) = 6 AND orderID <> 'Order ID' AND orderID IS NOT NULL AND orderID <> '';
+
+-- Part 2. How many of those orders were an iPhone?
+-- SELECT COUNT(orderID) 
+-- FROM BIT_DB.JanSales 
+-- WHERE Product = 'iPhone' AND length(orderID) = 6 AND orderID <> 'Order ID' AND orderID IS NOT NULL AND orderID <> '';
+
+-- Investigate the schema of the FebSakes table
+-- SELECT * FROM BIT_DB.FebSales LIMIT 20;
+-- Similar to the JanSales table, the orderID for FebSales is linked to the order_id for customers
+
+-- Part 3. Select the customer account numbers for all the orders that were placed in February.
+-- SELECT DISTINCT customers.acctnum
+-- FROM customers
+-- INNER JOIN BIT_DB.FebSales
+-- ON customers.order_id = FebSales.orderID
+-- WHERE length(order_id) = 6 AND order_id <> 'Order ID' AND order_id IS NOT NULL AND order_id <> '';
+
+-- Part 4. Which product was the cheapest one sold in January, and what was the price?
+-- SELECT DISTINCT Product, price
+-- FROM JanSales
+-- GROUP BY Product,price
+-- ORDER BY price ASC
+-- LIMIT 1;
+
+-- Part 5. What is the total revenue for each product sold in January?
+-- SELECT Product,Price*SUM(quantity) AS Product_Revenue
+-- FROM BIT_DB.JanSales
+-- GROUP BY Product;
+
+-- Part 6. Which products were sold in February at 548 Lincoln St, Seattle WA 98101, how many of each were sold and what was the total revenue?
+
+-- SELECT Product, SUM(Quantity), SUM(Quantity)*price AS TotalRevenue
+-- FROM BIT_DB.FebSales
+-- WHERE location = '548 Lincoln St, Seattle, WA 98101'
+-- GROUP BY Product;
+
+-- Part 7. How many custoomers ordered more than 2 products at a time in February, and what was the average amount spent for those customers?
+-- First let us select the results we want to see. We choose acctnum from the customers table to distinguish between customers. We also want the average price spent.  
+-- SELECT COUNT(DISTINCT customers.acctnum), AVG(Quantity*Price)
+-- FROM BIT_DB.FebSales
+-- LEFT JOIN BIT_DB.customers
+-- ON FebSales.orderID = customers.order_id
+-- WHERE Febsales.quantity > 2 
+-- AND length(order_id) = 6 AND order_id <> 'Order ID' AND order_id IS NOT NULL AND order_id <> '';
