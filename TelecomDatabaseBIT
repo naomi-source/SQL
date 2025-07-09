@@ -1,15 +1,3 @@
--- HEY, LOOK HERE! This is called a comment!
-
--- A comment is text that the database ignores when you run your SQL code
-
--- You can use comments to leave notes in your SQL code
-
--- You'll learn more about comments later, but feel free to use them when writing your SQL code if you'd like.
-
--- All you need to do is type -- at the beginning of your comment. This tells the database to ignore it!
-
--- Here, I'm using comments to show you where the two tables are in this database, because this is the first time you're seeing *two* tables being created together in one database! Can you find the second table? 
-
 -- TELECOM DATA TABLE #1: products 
 CREATE TABLE products (
     product_id INTEGER PRIMARY KEY,
